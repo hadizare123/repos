@@ -1,0 +1,319 @@
+create or replace function hr_get_sanavat(hr_c in integer,date_mohasebe in date) return varchar2  is
+ Result varchar(500);
+ duration_sanavat1 int :=0;
+ hr_study_level_id1 int :=0;
+ equivalent_level1 int :=0;
+ valid_from1 date :=null;
+ day1 int :=0;
+ -------------------
+ equivalent_level2 int :=0;
+ valid_from2 date :=null;
+ Sequence2 int :=0;
+ madrak_new int:=0;
+ -------------------------
+ flag_isar INT :=0;
+ --------------------
+ retval int :=0;
+ retval_madrak int :=0;
+  retval_madrak_m int :=0;
+-------------------
+enfesal int :=0;
+---------------------
+result_2 varchar(2000) :=' ';
+
+begin
+
+
+BEGIN
+  
+
+    
+
+
+
+
+
+
+----------------------------------------------------------------------------------
+select duration_sanavat,
+
+                 hr_study_level_id,
+                 equivalent_level,
+                 execution_fromdate,Sequence,day into  duration_sanavat1,
+
+ hr_study_level_id1,
+ equivalent_level1,
+ valid_from1,Sequence2,day1
+
+from
+(
+select * from (
+select day,duration_sanavat,hr_study_level_id,dd.execution_fromdate,Sequence,row_number() over(partition by hr_tbl_019_madrak.hr_tbl_019_id order by oc_base_value.sequence desc) g,hr_tbl_019_madrak.equivalent_level
+  from hr_tbl_019_madrak
+
+ inner join oc_base_value
+    on oc_base_value.oc_base_value_id = hr_tbl_019_madrak.equivalent_level
+ inner join 
+       (select *
+          from (select
+                
+    hr_tbl_019_id,
+               execution_fromdate,
+                 row_number() over(partition by sr.hr_c_bpartners_id order by sr.execution_fromdate desc) as ranking
+                  from hr_tbl_019 sr
+                
+                 where sr.hr_c_bpartners_id = hr_c
+                   and sr.isactive = 'Y'
+                   and trunc(sr.execution_fromdate) < date_mohasebe
+                   and sr.help = 'Y')
+         where ranking = 1)dd
+         on dd.hr_tbl_019_id=hr_tbl_019_madrak.hr_tbl_019_id
+         
+         )
+         where g=1);
+         --select * from oc_base_value where oc_base_value_id in (1000433) );
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      day1:=0;
+  END;
+  
+  BEGIN
+
+if (trunc(date_mohasebe)<=TO_DATE('2016/03/19', 'YYYY,MM,DD')) then
+
+select count(*) into flag_isar
+                from (select hr_tbl_001.hr_c_bpartners_id,
+                             row_number() over(partition by hr_tbl_001.Hr_c_Bpartners_Id order by hr_tbl_001.RUN_DATE desc) r,
+                             0
+                        from hr_tbl_001
+                       where (hr_tbl_001.c_doctype_id in (3000716, 3000717) or
+                             (hr_tbl_001.c_doctype_id = 3000718 and
+                             hr_tbl_001.Relation_Type = 1000443))
+                         AND Hr_c_Bpartners_Id IN (hr_c)
+                             and trunc(hr_tbl_001.RUN_DATE) <= trunc(date_mohasebe)
+                    and trunc(hr_tbl_001.RUN_DATE)>= valid_from1
+                    and hr_tbl_001.isactive='Y'
+
+
+                      )
+               where r = 1;
+
+end if;
+
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      flag_isar:=0;
+  END;
+
+
+BEGIN
+if (trunc(date_mohasebe)>TO_DATE('2016/03/19', 'YYYY,MM,DD') and trunc(date_mohasebe)<=TO_DATE('2019/03/20', 'YYYY,MM,DD')) then
+
+
+select count(*) into flag_isar from
+   (select *
+     from (select hr_tbl_001.hr_c_bpartners_id,
+                  row_number() over(partition by hr_tbl_001.Hr_c_Bpartners_Id order by hr_tbl_001.RUN_DATE desc) r,
+                  0
+             from hr_tbl_001
+            where (hr_tbl_001.c_doctype_id in (3000716, 3000717) or
+                  (hr_tbl_001.c_doctype_id = 3000718 and
+                  hr_tbl_001.Relation_Type = 1000443))
+              AND Hr_c_Bpartners_Id IN (hr_c)
+              AND TRUNC(date_mohasebe) >= TRUNC(hr_tbl_001.RUN_DATE)
+                                  and trunc(hr_tbl_001.RUN_DATE)>= valid_from1
+                                  AND hr_tbl_001.Isactive='Y'
+           union all
+           SELECT hr_c_bpartners_id, 1, sum(duration_day)
+             FROM (select hr_tbl_001.hr_c_bpartners_id,
+                          hr_tbl_001.duration_day,
+                          row_number() over(partition by hr_tbl_001.Hr_c_Bpartners_Id order by hr_tbl_001.RUN_DATE desc) r
+                     from hr_tbl_001
+                    where hr_tbl_001.c_doctype_id = 3000715
+                      and hr_tbl_001.HOZOOR_KIND = 1
+                      AND Hr_c_Bpartners_Id IN (hr_c)
+                      AND TRUNC(date_mohasebe) >=
+                          TRUNC(hr_tbl_001.RUN_DATE)
+                                              and trunc(hr_tbl_001.RUN_DATE)>= valid_from1
+                                              AND hr_tbl_001.Isactive='Y'
+                          )
+            group by (hr_c_bpartners_id)
+           having sum(duration_day) >= 180 )
+    where r = 1);
+    end if;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      flag_isar:=0;
+  END;
+  BEGIN
+if (trunc(date_mohasebe)>TO_DATE('2016/03/19', 'YYYY,MM,DD')) then
+
+select count(*) into flag_isar
+                from (select hr_tbl_001.hr_c_bpartners_id,
+                             row_number() over(partition by hr_tbl_001.Hr_c_Bpartners_Id order by hr_tbl_001.RUN_DATE desc) r,
+                             0
+                        from hr_tbl_001
+                       where (hr_tbl_001.c_doctype_id in (3000716, 3000717) or
+                             (hr_tbl_001.c_doctype_id = 3000718 and
+                             hr_tbl_001.Relation_Type = 1000443))
+                         AND Hr_c_Bpartners_Id IN (hr_c)
+                         AND hr_tbl_001.Isactive='Y'
+                             and trunc(hr_tbl_001.RUN_DATE) <= trunc(date_mohasebe)
+                                       and trunc(hr_tbl_001.RUN_DATE)>= valid_from1
+
+
+
+                      )
+               where r = 1;
+end if;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      flag_isar:=0;
+  END;
+BEGIN
+
+
+select equivalent_level,certif_date into  equivalent_level2,
+ valid_from2
+            from (select edu.hr_c_bpartners_id,
+                         edu.equivalent_level,
+                         edu.hr_study_level_id,
+                         edu.certif_date,
+                         row_number() over(partition by edu.hr_c_bpartners_id, edu.equivalent_level order by edu.certif_date) as ranking
+
+                    from hr_emp_study_field edu
+          where edu.hr_c_bpartners_id= hr_c
+                   and trunc(edu.certif_date) <= trunc(date_mohasebe)
+                   and trunc(edu.certif_date)>valid_from1
+                   AND edu.Isactive='Y'
+                   )
+           where ranking = 1;
+
+
+     EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      equivalent_level2:=0;
+  END;
+  BEGIN
+
+select p into enfesal from (
+select sum(least(hr_tbl_015.execution_todate,trunc(date_mohasebe))-greatest(hr_tbl_015.execution_fromdate,valid_from1)+1) p  from hr_tbl_015
+where    hr_tbl_015.c_doctype_id=3000120 AND hr_tbl_015.Isactive='Y'
+and hr_tbl_015.hr_c_bpartners_id in (hr_c)
+and   ((hr_tbl_015.execution_fromdate>valid_from1
+and   hr_tbl_015.execution_fromdate<=trunc(date_mohasebe))
+or (hr_tbl_015.execution_todate>valid_from1
+and   hr_tbl_015.execution_todate<=trunc(date_mohasebe))));
+
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+
+      enfesal:=0;
+  END;
+  if (enfesal is  null) then
+    enfesal:=0;
+  end if;
+-----------------------------
+ if (valid_from1 is not null and valid_from2 is  null) then
+ retval:= date_mohasebe-valid_from1;
+ duration_sanavat1:=retval+duration_sanavat1-enfesal;
+ retval_madrak:=hr_study_level_id1;
+ retval_madrak_m:=equivalent_level1;
+ elsif (valid_from1 is NOT null and valid_from2 is not null) then
+
+BEGIN
+ select oc_base_value_id into madrak_new from (
+ select oc_base_value_id from oc_base_value where oc_base_entity_id in (
+ select oc_base_value.oc_base_entity_id from oc_base_value where oc_base_value_id=equivalent_level2)
+ and oc_base_value.sequence=sequence2+1);
+--------------------------------------------------
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+    
+      madrak_new:=0;
+  END;
+
+
+ retval:= date_mohasebe-valid_from1;
+ duration_sanavat1:=retval-enfesal;
+ retval_madrak:=hr_study_level_id1;
+ retval_madrak_m:=madrak_new;
+ end if;
+ begin
+  if (flag_isar=1) then
+   
+  
+   select oc_base_value_id into Sequence2 from (
+   select oc_base_value_id from oc_base_value where oc_base_entity_id in (
+   select oc_base_value.oc_base_entity_id from oc_base_value where oc_base_value_id=retval_madrak_m)
+   and oc_base_value.sequence= (select oc_base_value.sequence+1 from oc_base_value  where oc_base_value_id=retval_madrak_m));
+    if (Sequence2 is not null) then
+   duration_sanavat1:=retval-enfesal;
+   retval_madrak_m:=Sequence2;
+   
+  end if;
+   end if;
+    EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+    
+      Sequence2:=0;
+  END;
+  
+  FOR cur IN (
+      select duration_sanavat,day    ,       hr_study_level_id,
+                 equivalent_level
+
+from
+(
+select * from (
+select day,duration_sanavat,hr_study_level_id,dd.execution_fromdate,Sequence,row_number() over(partition by hr_tbl_019_madrak.hr_tbl_019_id order by oc_base_value.sequence desc) g,hr_tbl_019_madrak.equivalent_level
+  from hr_tbl_019_madrak
+
+ inner join oc_base_value
+    on oc_base_value.oc_base_value_id = hr_tbl_019_madrak.equivalent_level
+ inner join 
+       (select *
+          from (select
+                
+    hr_tbl_019_id,
+               execution_fromdate,
+                 row_number() over(partition by sr.hr_c_bpartners_id order by sr.execution_fromdate desc) as ranking
+                  from hr_tbl_019 sr
+                
+                 where sr.hr_c_bpartners_id = hr_c
+                   and sr.isactive = 'Y'
+                   and trunc(sr.execution_fromdate) < date_mohasebe
+                   and sr.help = 'Y')
+         where ranking = 1)dd
+         on dd.hr_tbl_019_id=hr_tbl_019_madrak.hr_tbl_019_id
+         
+         )
+)
+     )LOOP
+     
+   if (retval_madrak_m!=cur.equivalent_level) then
+     
+    if (result_2!=' ') then
+    result_2:=result_2||'#'||'$$'||cur.equivalent_level||'$$'||cur.hr_study_level_id||'$$'||cur.duration_sanavat ||'$$'||(cur.day)||'$';
+    else
+    result_2:='$$'||cur.equivalent_level||'$$'||cur.hr_study_level_id||'$$'||cur.duration_sanavat ||'$$'||(cur.day)||'$';  
+    end if;
+    end if;
+    
+    END LOOP;
+ 
+  
+  if (result_2!=' ') then
+  Result:=result_2||'#'||'$$'||retval_madrak_m||'$$'||retval_madrak||'$$'||duration_sanavat1 ||'$$'||(day1+retval)||'$';
+  else
+    Result:='$$'||retval_madrak_m||'$$'||retval_madrak||'$$'||duration_sanavat1 ||'$$'||(day1+retval)||'$';
+ 
+    end if;
+  return(Result);
+
+end hr_get_sanavat;
