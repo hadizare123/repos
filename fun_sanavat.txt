@@ -1,4 +1,5 @@
 create or replace function hr_get_sanavat(hr_c in integer,date_mohasebe in date) return varchar2  is
+
  Result varchar(500);
  duration_sanavat1 int :=0;
  hr_study_level_id1 int :=0;
