@@ -25,4 +25,12 @@ git checkout v1   '؟؟؟؟'
 git tag -a v2 logcode   'بر روی لاگ های قدیمی میشود تگ گذاشت'
 git tag -l "v*"  ' شروع میشود رو نمایمی دهد v تمام تگها که با '
 git shoew v1  ' رو نمایش می دهد v1 توضیحات مربوط به ورژن '
+git config --global user.name  'یوز نام رو نمایش می دهد'
+git config --global user.signingkey 'کلید اختصاصی رو نمایش می دهد'
+git config 
+----------------------------------------------------------
+امضا دیج
+gpg --list-key   'نمایش کلیدها'
+gpg --gen-key  'ایجاد کلید'
+gpg --list-secret-key --keyid-format LONG   'کلید اختصاصی رو نمایش می دهد'
  

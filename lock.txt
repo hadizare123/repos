@@ -1,0 +1,6 @@
+SELECT 'ALTER SYSTEM KILL SESSION ' || '''' || s.SID || ',' || s.SERIAL# || '''' || ' -- ' || o.OBJECT_NAME 
+FROM v$locked_object l, All_Objects o, v$session s
+WHERE l.OBJECT_ID = o.OBJECT_ID
+and l.SESSION_ID = s.SID;
+
+select * from acct_c_lock_object
