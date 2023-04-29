@@ -1,0 +1,2 @@
+برای برداشتن محدودیت ها دانلود image در هر 6 ساعت باید در سایت HUB.DOCKER.COM
+ثبت نام کرده و در SHEL لینوکس بادستور DOCKER -U USERNAME -P PASWORD لاگین کنیم
