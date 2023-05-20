@@ -8,3 +8,5 @@
 5-docker stop containername ;
 5-docker run containername ;
 6-docker run  -d -p 80:80 containername "run bakground containername up port 80"
+7-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag "run container mysql"
+
