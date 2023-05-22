@@ -4,3 +4,5 @@ WHERE l.OBJECT_ID = o.OBJECT_ID
 and l.SESSION_ID = s.SID;
 
 select * from acct_c_lock_object
+
+185.51.200.2, 178.22.122.100
