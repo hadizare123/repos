@@ -1,2 +1,16 @@
 برای برداشتن محدودیت ها دانلود image در هر 6 ساعت باید در سایت HUB.DOCKER.COM
 ثبت نام کرده و در SHEL لینوکس بادستور DOCKER -U USERNAME -P PASWORD لاگین کنیم
+
+1-docker push imagename "download image";
+2-docker images "show image";
+3-docker run images ;
+4-docker ps "show container" -a "show all container close or open"
+5-docker stop containername ;
+5-docker run containername ;
+6-docker run  -d -p 80:80 containername "run bakground containername up port 80"
+7-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag "run container mysql"
+8-sudo docker container exec -it  containername /bin/bash
+9-sudo docker inspect -f '{{.Config.Entrypoint}}'   containername
+10-sudo docker container stats dreamy_dijkstra  "status container manitor"
+
+
