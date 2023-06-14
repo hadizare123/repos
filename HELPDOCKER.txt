@@ -8,9 +8,11 @@
 5-docker stop containername ;
 5-docker run containername ;
 6-docker run  -d -p 80:80 containername "run bakground containername up port 80"
-7-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag "run container mysql"
+7-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql "run container mysql"
 8-sudo docker container exec -it  containername /bin/bash
 9-sudo docker inspect -f '{{.Config.Entrypoint}}'   containername
 10-sudo docker container stats dreamy_dijkstra  "status container manitor"
+11-psql -h localhost -U postgres 
+12-sudo docker  rm containername
 
 
