@@ -1,0 +1,10 @@
+sudo docker run --name wedatabase -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+sudo docker container ls 
+sudo docker container exec -it  wedatabase  /bin/bash 
+psql -h localhost -U postgres
+\l
+create database my_database;
+exit;
+exit;
+sudo  docker run --name webhost  -e WORDPRESS_DB_PASSWORD_FILE=cdq74CN2 -p 8085:80  -d  ntninja/wordpress-postgresql
+sudo docker inspect  wedatabase
