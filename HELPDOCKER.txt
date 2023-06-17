@@ -14,5 +14,10 @@
 10-sudo docker container stats dreamy_dijkstra  "status container manitor"
 11-psql -h localhost -U postgres 
 12-sudo docker  rm containername
+-network
+1-sudo docker network ls
+2-sudo docker network inspect "containername"
+3-sudo docker network create "networkname"
+
 
 
