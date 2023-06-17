@@ -13,7 +13,8 @@
 9-sudo docker inspect -f '{{.Config.Entrypoint}}'   containername
 10-sudo docker container stats dreamy_dijkstra  "status container manitor"
 11-psql -h localhost -U postgres 
-12-sudo docker  rm containername
+12-sudo docker  rm "containername"
+13-sudo docke  stop/start "countainernmae"
 -network
 1-sudo docker network ls
 2-sudo docker network inspect "containername"
