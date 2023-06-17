@@ -1,0 +1,30 @@
+SELECT * FROM (SELECT 'ALTER TABLE ' || LOWER(a.table_name)
+||' ADD CONSTRAINT ' || LOWER(a.constraint_name)
+||' FOREIGN KEY (' || LOWER(column_name) || ') REFERENCES '
+|| (SELECT LOWER(table_name) ||'('|| LOWER(column_name) ||')' FROM all_cons_columns
+WHERE constraint_name = a.r_constraint_name)
+||' INITIALLY DEFERRED DEFERRABLE;' ,constraint_type
+FROM all_constraints a,
+all_cons_columns b
+WHERE a.constraint_type ='R'
+AND a.table_name = b.table_name
+AND a.owner =b.owner
+AND a.constraint_name =b.constraint_name
+AND (LOWER(a.table_name) LIKE 'net_mon%' OR  LOWER(a.table_name) LIKE  '%zon%')
+AND a.owner= (select user from dual)
+
+UNION ALL
+
+SELECT 'ALTER TABLE ' || LOWER(a.table_name)
+||' ADD primary key ' || '(' || LOWER(column_name) || ')',constraint_type
+
+FROM all_constraints a,
+all_cons_columns b
+WHERE a.constraint_type ='P'
+AND a.table_name = b.table_name
+AND a.owner =b.owner
+AND a.constraint_name =b.constraint_name
+AND (UPPER(a.table_name) LIKE 'net_mon%' OR  LOWER(a.table_name) LIKE  '%zon%')
+AND a.owner= (select user from dual)  )
+
+ORDER BY constraint_type 
