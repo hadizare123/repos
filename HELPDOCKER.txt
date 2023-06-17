@@ -7,7 +7,7 @@
 4-docker ps "show container" -a "show all container close or open"
 5-docker stop containername ;
 5-docker run containername ;
-6-docker run  -d -p 80:80 containername "run bakground containername up port 80"
+6-docker run  -d -p 80:80 --network "networkname"  containername "-d run bakground containername up port 80" 
 7-docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql "run container mysql"
 8-sudo docker container exec -it  containername /bin/bash
 9-sudo docker inspect -f '{{.Config.Entrypoint}}'   containername
